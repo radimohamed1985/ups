@@ -1,0 +1,80 @@
+
+*****************  create the main database ***************
+
+CREATE DATABASE ups;
+
+
+**********************************************************************
+*************  start create first table about retail center  ***************
+
+
+CREATE TABLE retailcenter(
+retail_id int PRIMARY key AUTO_INCREMENT,
+address varchar(255),
+type varchar(255)
+    );
+**************************************************************************
+
+
+******************  end of first table retail  center *************************
+
+
+**********  create shipped item table and relation between shipped item and retail center as sender  ********************
+
+CREATE TABLE shippeditem(
+shipped_id int PRIMARY key AUTO_INCREMENT,
+retailcenter_id int,
+destination varchar(255),
+wieght int ,
+deminsion int ,
+insurance varchar(255),
+deliverydate date,
+FOREIGN key (retailcenter_id) REFERENCES retailcenter(retail_id)
+    
+    )ENGINE=INNODB;
+
+******************  end of shipped item table ************************
+
+
+*********** create transpotaion events table *********
+
+create table transevents(
+schedulenumber int PRIMARY KEY AUTO_INCREMENT,
+type varchar(255),
+deliveryroute varchar(255)
+    )ENGINE = INNODB;
+
+****** end of table ***********
+
+********* create table of transpotaion process and relation between transpots event and shipped item as the way to  ship this products  **********
+
+
+create table transport(
+item_id int,
+transevents_id  int,
+PRIMARY key (item_id,transevents_id),
+FOREIGN KEY (item_id) REFERENCES shippeditem(shipped_id),
+FOREIGN KEY (transevents_id) REFERENCES transevents(schedulenumber)
+    )ENGINE = INNODB;
+
+
+
+************   end of table******************
+
+
+
+
+**************************** query to know retail center info and shiped item info from this retail center **********
+
+SELECT `address`,`destination` FROM `shippeditem`,`retailcenter` where retailcenter.retail_id = shippeditem.retailcenter_id;
+
+
+**************************  query to know transpotaion type and shipped items and retail center and all data  ************
+
+SELECT * FROM `shippeditem` INNER JOIN `transport` on shippeditem.shipped_id = transport.item_id;
+
+*************************************** to select more data from all tables query ********************
+
+SELECT *  FROM (shippeditem,retailcenter) INNER JOIN `transport` on shippeditem.shipped_id = transport.item_id ;
+
+
